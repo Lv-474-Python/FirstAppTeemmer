@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>QUIZ_PROJECT</title>
+</head>
+<body>
+    {% if user.is_anonymous %}
+        you are not logged in
+        <a href="/users/login"> Log In</a>
+    {% else %}
+        <h1>GREETINGS, {{ user.username }} </h1>
+        <a href="/users/profile">View yor profile</a>
+        <a href="/quizzes/create">View yor profile</a>
+    {% endif %}
+
+</body>
+</html>

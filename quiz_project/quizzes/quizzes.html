@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Quizzes</title>
+</head>
+<body>
+    {% if all_quizzes %}
+    <ul>
+    {% for quiz in all_quizzes %}
+        <li><a href="/quizzes/{{ quiz.id }}/questions">{{ quiz.name }}</a></li>
+    {% endfor %}
+    </ul>
+    {% else %}
+        <p>No quizzes are available.</p>
+    {% endif %}
+</body>
+</html>
