@@ -1,4 +1,5 @@
-from django.db import models
+from django.db import models, IntegrityError
+from django.utils import timezone
 
 from users.models import CustomUser
 
@@ -10,3 +11,12 @@ class Quiz(models.Model):
 
     class Meta:
         db_table = 'tbl_quizzes'
+
+    @staticmethod
+    def create(name, user_id):
+        quiz = Quiz(user_id=user_id, name=name, date=timezone.now())
+        try:
+            quiz.save()
+            return quiz
+        except IntegrityError:
+            return None

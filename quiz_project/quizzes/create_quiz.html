@@ -1,10 +1,20 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    {% load static %}
+    <link rel="stylesheet" type="text/css" href="{% static 'styles.css' %}">
     <meta charset="UTF-8">
     <title>Create quiz</title>
 </head>
 <body>
-    <input type="text" placeholder="quiz name" name="quiz_name">
+<div class="form">
+    <form method="post" action="">
+        <input type="text" placeholder="quiz name" name="quiz_name"> <br />
+        {% csrf_token %}
+        questions number <input type="number" name="questions_count"> <br />
+        answers number <input type="number" name="answers_count"> <br />
+        <button type="submit">Add questions</button>
+    </form>
+</div>
 </body>
 </html>

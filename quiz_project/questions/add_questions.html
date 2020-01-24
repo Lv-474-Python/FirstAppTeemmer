@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% load static %}
+    <link rel="stylesheet" type="text/css" href="{% static 'styles.css' %}">
+    <meta charset="UTF-8">
+    <title>Add questions</title>
+</head>
+<body>
+<div class="form">
+    <form method="post" action="/questions/add">
+        <h2>Add questions to your {{ quiz.name }} quiz</h2><br>
+        {% csrf_token %}
+        <input type="hidden" name="questions_count" value="{{ questions_count }}">
+        <input type="hidden" name="answers_count" value="{{ answers_count }}">
+        <input type="hidden" name="quiz_id" value="{{ quiz.id }}">
+        {% for i in range_questions_count %}
+        <input type="text" placeholder="question {{ i }}" name="question_{{ i }}"><br>
+            {% for j in range_answers_count %}
+        <div class="answers-box">
+            <input type="text" placeholder="answer {{ j }}" name="answer_{{ i }}_{{ j }}">
+            <input type="checkbox" name="is_correct_{{ i }}_{{ j }}" ><br>
+        </div>
+            {% endfor %}
+        <br>
+        {% endfor %}
+        <button type="submit">submit</button>
+    </form>
+</div>
+</body>
+</html>

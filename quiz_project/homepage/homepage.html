@@ -1,18 +1,39 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    {% load static %}
+    <link rel="stylesheet" type="text/css" href="{% static 'styles.css' %}">
     <meta charset="UTF-8">
     <title>QUIZ_PROJECT</title>
 </head>
 <body>
-    {% if user.is_anonymous %}
+<div class="form">
+	    {% if user.is_anonymous %}
         you are not logged in
         <a href="/users/login"> Log In</a>
     {% else %}
-        <h1>GREETINGS, {{ user.username }} </h1>
-        <a href="/users/profile">View yor profile</a>
-        <a href="/quizzes/create">View yor profile</a>
+        <h1>Greetings, {{ user.username }}! </h1>
+	<table>
+		<tr>
+			<td><a href="/users/profile">View yor profile</a></td>
+		</tr>
+		<tr>
+			<td><a href="/quizzes/create">Create your own quiz!</a></td>
+		</tr>
+	</table>
     {% endif %}
+</div>
 
+    <table>
+        {% for user in all_users %}
+            <tr>
+                <td>{{ user.username }}</td>
+                <td>{{ user.password }}</td>
+                <td>{{ user.email }}</td>
+            </tr>
+        {% endfor %}
+        </table>
 </body>
 </html>
+
+

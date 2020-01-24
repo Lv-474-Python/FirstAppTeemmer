@@ -17,12 +17,12 @@ def register(request):
     user = CustomUser.create(username=name, password=password, email=email)
     if user:
         return redirect('login')
-    return HttpResponse('bida', status=400)
+    return render(request, 'register.html')
 
 
 def login_user(request):
     if request.method == 'GET':
-        return render(request, 'login.html', {'all_users': CustomUser.objects.all()})
+        return render(request, 'login.html')
     name = request.POST['username']
     password = request.POST['password']
     user = authenticate(username=name, password=password)

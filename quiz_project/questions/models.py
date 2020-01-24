@@ -1,4 +1,4 @@
-from django.db import models
+from django.db import models, IntegrityError
 from quizzes.models import Quiz
 
 
@@ -9,3 +9,12 @@ class Question(models.Model):
 
     class Meta:
         db_table = 'tbl_questions'
+
+    @staticmethod
+    def create(text, quiz_id):
+        question = Question(text=text, quiz_id=quiz_id)
+        try:
+            question.save()
+            return question
+        except IntegrityError:
+            return None
