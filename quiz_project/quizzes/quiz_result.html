@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% load static %}
+    <link rel="stylesheet" type="text/css" href="{% static 'styles.css' %}">
+    <meta charset="UTF-8">
+    <title>Results</title>
+</head>
+<body>
+<h2> Your scores for quiz: {{ quiz.name }} </h2>
+{% if score >= best_score %}
+<a>Congrats!, your score: {{ score }}, best score: {{ best_score }}</a>
+{% else %}
+<a> So sad(( your score: {{ score }}, best score: {{ best_score }}</a>
+{% endif %}
+<div align="center">
+    <input type="checkbox" id="checkbox_dislike" />
+    <label for="checkbox_dislike"><img src="{% static 'dislike.jpeg' %}" height="100px"/></label>
+    <input type="checkbox" id="checkbox_like" />
+    <label for="checkbox_like"><img src="{% static 'like.jpeg' %}" height="100px"/></label>
+</div>
+</body>
+</html>

@@ -22,7 +22,8 @@ def add(request):
         question = Question.create(text=request.POST.get(f'question_{i}'), quiz_id=quiz_id)
         question_id = question.id
         for j in range(answers_count):
-            Answer.create(question_id=question_id, text=request.POST.get(f'answer_{i}_{j}'),
+            Answer.create(question_id=question_id,
+                          text=request.POST.get(f'answer_{i}_{j}'),
                           is_correct=bool(request.POST.get(f'is_correct_{i}_{j}')))
     return redirect('homepage')
 

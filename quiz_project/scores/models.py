@@ -10,3 +10,13 @@ class Score(models.Model):
 
     class Meta:
         db_table = 'tbl_scores'
+        unique_together = [
+            ("user", "quiz"),
+        ]
+
+    @staticmethod
+    def get_score(quiz_id, user_id):
+        score = Score.objects.filter(user_id=user_id, quiz_id=quiz_id)
+        if score:
+            return float(score[0].score)
+        return -1

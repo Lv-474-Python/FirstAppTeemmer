@@ -20,3 +20,4 @@ class Quiz(models.Model):
             return quiz
         except IntegrityError:
             return None
+

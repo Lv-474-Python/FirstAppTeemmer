@@ -18,3 +18,8 @@ class Answer(models.Model):
             return answer
         except IntegrityError:
             return None
+
+    @staticmethod
+    def is_correct_answer(answer):
+        db_answer = Answer.objects.get(id=int(list(answer.keys())[0]))
+        return True if db_answer.is_correct == bool(list(answer.values())[0]) else False
