@@ -9,11 +9,19 @@
 <body>
 <div class="form">
     {% if all_quizzes %}
-    <ul>
     {% for quiz in all_quizzes %}
-        <li><a href="/quizzes/{{ quiz.id }}">{{ quiz.name }}</a></li>
+    <div class="quiz_box">
+        <a href="/quizzes/{{ quiz.id }}">{{ quiz.name }}</a>
+        <div class="quiz_box_info">
+            <a style="font-size:16px;color:{% if quiz.rate < 0 %} red {% else %} green {% endif %}">
+                rate: {{ quiz.rate }}</a>
+            <a>questions: {{ quiz.questions_count }}</a>
+            <a>max points: {{ quiz.max_points }}</a>
+            <a>your best score:{% if quiz.best_score != -1 %} {{ quiz.best_score }} {% else %} 0 {% endif %}</a>
+        </div> <br>
+        <h5>last comment: {{ quiz.comment }}</h5>
+    </div>
     {% endfor %}
-    </ul>
     {% else %}
         <p>No quizzes are available.</p>
     {% endif %}

@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     {% load static %}
-    <link rel="stylesheet" type="text/css" href="{% static 'styles.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'styles2.css' %}">
     <meta charset="UTF-8">
     <title>{{ quiz.name }}</title>
 </head>
@@ -11,18 +11,16 @@
     <form method="post" action="">
         <h2>{{ quiz.name }}</h2><br>
         {% csrf_token %}
-        <input type="hidden" name="questions_count" value="{{ questions_count }}">
-        <input type="hidden" name="answers_count" value="{{ answers_count }}">
-        <input type="hidden" name="quiz_id" value="{{ quiz.id }}">
         {% for question in questions %}
-        <h3>{{ forloop.counter }}. {{ question.text }}</h3>
-            {% for answer in question.answers %}
-            <tr>
-                <td>{{ answer.text }}</td>
-                <td><input type="checkbox" name="checkbox_answer_{{ answer.id }}"></td>
-            </tr>
-            {% endfor %}
-        <br>
+        <div class="quiz">
+            <h3>{{ forloop.counter }}. {{ question.text }} ({{ question.points }} point/s)</h3>
+                {% for answer in question.answers %}
+                <tr>
+                    <td><div><input type="checkbox" name="checkbox_answer_{{ answer.id }}" >{{ answer.text }}</div></td>
+                </tr>
+                {% endfor %}
+            <br>
+        </div>
         {% endfor %}
         <button type="submit">submit</button>
     </form>
