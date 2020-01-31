@@ -17,9 +17,9 @@
                 rate: {{ quiz.rate }}</a>
             <a>questions: {{ quiz.questions_count }}</a>
             <a>max points: {{ quiz.max_points }}</a>
-            <a>your best score:{% if quiz.best_score != -1 %} {{ quiz.best_score }} {% else %} 0 {% endif %}</a>
+            <a>your best score:{% if quiz.best_score == -1 %} 0 {% else %} {{ quiz.best_score }} {% endif %}</a>
         </div> <br>
-        <h5>last comment: {{ quiz.comment }}</h5>
+        <h5>last comment: <i style="font-size:11px">{{ quiz.comment }}</i></h5>
     </div>
     {% endfor %}
     {% else %}

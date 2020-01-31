@@ -33,7 +33,6 @@ profile-page {
 .form input {
   font-family: "Roboto", sans-serif;
   outline: 0;
-    width: 100%;
   background: #f2f2f2;
   border: 0;
   margin: 0 0 15px;
@@ -70,7 +69,6 @@ profile-page {
   text-transform: uppercase;
   outline: 0;
   background: #4CAF50;
-  width: 100%;
   border: 0;
   padding: 15px;
   color: #FFFFFF;
@@ -180,4 +178,17 @@ margin:-10px;
 font-size:13px;
   display:flex;
   justify-content:end;
+}
+
+.question {
+  background: #FFFFFF;
+  max-width: 540px;
+  margin-bottom: 30px;
+  padding: 30px;
+  text-align: center;
+  box-shadow: 0 1px 1px 1px rgba(0, 0, 0, 0.2);
+}
+
+.answer a{
+
 }

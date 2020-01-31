@@ -84,13 +84,17 @@ def quiz_result(request, quiz_id):
 @login_required(login_url='/users/login/')
 def create_quiz(request):
     if request.method == "GET":
-        return render(request, 'create_quiz.html')
+        return render(request, 'add_questions2.html', {'quiz': Quiz(name="testttt", user_id=request.user.id),
+                                                      'questions_count': 1,
+                                                      'range_questions_count': range(1),
+                                                      'answers_count': 2,
+                                                      'range_answers_count': range(2)})
     quiz_name = request.POST.get('quiz_name')
     questions_count = int(request.POST.get('questions_count'))
     answers_count = int(request.POST.get('answers_count'))
     quiz = Quiz.create(name=quiz_name, user_id=request.user.id)
     if quiz:
-        return render(request, 'add_questions.html', {'quiz': quiz,
+        return render(request, 'add_questions2.html', {'quiz': quiz,
                                                       'questions_count': questions_count,
                                                       'range_questions_count': range(questions_count),
                                                       'answers_count': answers_count,
@@ -102,8 +106,8 @@ def add_additional_info(quiz, user_id):
     rates = QuizRate.objects.filter(quiz_id=quiz.id)
     questions = Question.objects.filter(quiz_id=quiz.id)
     quiz.rate = rates.aggregate(Sum('rate'))['rate__sum'] if rates else 0
-    quiz.comment = list(rates.order_by('id'))[0].comment if rates else "There is no comments for this quiz yet("
+    quiz.comment = list(rates.order_by('-id'))[0].comment if rates else "There is no comments for this quiz yet("
     quiz.questions_count = len(questions)
-    quiz.best_score = Score.get_score(user_id, quiz.id)
+    quiz.best_score = Score.get_score(quiz.id, user_id)
     quiz.max_points = questions.aggregate(Sum('points'))['points__sum'] if questions else 0
     return quiz
