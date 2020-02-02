@@ -20,11 +20,6 @@ def get_all_quizzes(request):
     return render(request, 'quizzes.html', {'all_quizzes': quizzes})
 
 
-def get_quizzes_to_pass(request):
-
-    return render(request, 'quizzes.html', {'all_quizzes': Quiz.objects.exclude(Quiz.passed_by_user(request.user.id))})
-
-
 def calculate_score(request, questions):
     quiz_score = 0
     for question in questions:
@@ -84,21 +79,23 @@ def quiz_result(request, quiz_id):
 @login_required(login_url='/users/login/')
 def create_quiz(request):
     if request.method == "GET":
-        return render(request, 'add_questions2.html', {'quiz': Quiz(name="testttt", user_id=request.user.id),
-                                                      'questions_count': 1,
-                                                      'range_questions_count': range(1),
-                                                      'answers_count': 2,
-                                                      'range_answers_count': range(2)})
+        return render(request, 'create_quiz.html')
     quiz_name = request.POST.get('quiz_name')
-    questions_count = int(request.POST.get('questions_count'))
-    answers_count = int(request.POST.get('answers_count'))
+    q_num = 1
     quiz = Quiz.create(name=quiz_name, user_id=request.user.id)
+    while quiz and str(request.POST.get('question_' + str(q_num))) != 'None':
+        q_text = str(request.POST.get('question_' + str(q_num)))
+        points = int(request.POST.get('question_pts_' + str(q_num)))
+        question = Question.create(q_text, quiz.id, points)
+        a_num = 1
+        while question and str(request.POST.get('answer_' + str(q_num) + '_' + str(a_num))) != 'None':
+            answer = str(request.POST.get('answer_' + str(q_num) + '_' + str(a_num)))
+            is_correct = bool(request.POST.get('is_correct_' + str(q_num) + '_' + str(a_num)))
+            Answer.create(answer, is_correct, question.id)
+            a_num += 1
+        q_num += 1
     if quiz:
-        return render(request, 'add_questions2.html', {'quiz': quiz,
-                                                      'questions_count': questions_count,
-                                                      'range_questions_count': range(questions_count),
-                                                      'answers_count': answers_count,
-                                                      'range_answers_count': range(answers_count)}, )
+        return redirect('homepage')
     return redirect('create_quiz')
 
 
@@ -106,7 +103,7 @@ def add_additional_info(quiz, user_id):
     rates = QuizRate.objects.filter(quiz_id=quiz.id)
     questions = Question.objects.filter(quiz_id=quiz.id)
     quiz.rate = rates.aggregate(Sum('rate'))['rate__sum'] if rates else 0
-    quiz.comment = list(rates.order_by('-id'))[0].comment if rates else "There is no comments for this quiz yet("
+    quiz.comment = list(rates.order_by('-id'))[0].comment if rates else "No comments yet("
     quiz.questions_count = len(questions)
     quiz.best_score = Score.get_score(quiz.id, user_id)
     quiz.max_points = questions.aggregate(Sum('points'))['points__sum'] if questions else 0

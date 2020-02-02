@@ -6,7 +6,7 @@ from users.models import CustomUser
 
 class Quiz(models.Model):
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
-    name = models.CharField(max_length=50)
+    name = models.CharField(max_length=50, unique=True)
     date = models.DateTimeField()
 
     class Meta:
@@ -20,4 +20,8 @@ class Quiz(models.Model):
             return quiz
         except IntegrityError:
             return None
+
+    @staticmethod
+    def is_available(name):
+        return False if Quiz.objects.get(name=name) else True
 

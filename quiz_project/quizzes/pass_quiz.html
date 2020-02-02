@@ -15,9 +15,7 @@
         <div class="quiz">
             <h3>{{ forloop.counter }}. {{ question.text }} ({{ question.points }} point/s)</h3>
                 {% for answer in question.answers %}
-                <tr>
-                    <td><div><input type="checkbox" name="checkbox_answer_{{ answer.id }}" >{{ answer.text }}</div></td>
-                </tr>
+                <div><input type="checkbox" name="checkbox_answer_{{ answer.id }}" >{{ answer.text }}</div>
                 {% endfor %}
             <br>
         </div>

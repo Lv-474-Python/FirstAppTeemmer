@@ -20,5 +20,4 @@ urlpatterns = [
     path('quizzes/', include('quizzes.urls')),
     path('users/', include('users.urls')),
     path('homepage/', include('homepage.urls')),
-    path('questions/', include('questions.urls')),
 ]

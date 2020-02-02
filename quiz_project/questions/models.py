@@ -11,8 +11,8 @@ class Question(models.Model):
         db_table = 'tbl_questions'
 
     @staticmethod
-    def create(text, quiz_id):
-        question = Question(text=text, quiz_id=quiz_id)
+    def create(text, quiz_id, points):
+        question = Question(text=text, quiz_id=quiz_id, points=points)
         try:
             question.save()
             return question
