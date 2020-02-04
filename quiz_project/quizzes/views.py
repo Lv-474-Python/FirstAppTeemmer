@@ -17,7 +17,7 @@ def get_all_quizzes(request):
     quizzes = Quiz.objects.all()
     for quiz in quizzes:
         add_additional_info(quiz, request.user.id)
-    return render(request, 'quizzes.html', {'all_quizzes': quizzes})
+    return render(request, 'quizzes.html', {'all_quizzes': quizzes, 'username': request.user.username})
 
 
 def calculate_score(request, questions):
@@ -32,7 +32,7 @@ def calculate_score(request, questions):
     return round(quiz_score, 2)
 
 
-@login_required(login_url='/users/login/')
+@login_required
 def pass_quiz(request, quiz_id):
     quiz = Quiz.objects.get(id=quiz_id)
     questions = Question.objects.filter(quiz_id=quiz.id).order_by('id')
@@ -52,7 +52,7 @@ def pass_quiz(request, quiz_id):
     return HttpResponseRedirect(f'/quizzes/{quiz.id}/result')
 
 
-@login_required(login_url='/users/login/')
+@login_required
 def quiz_result(request, quiz_id):
     score, quiz_name, best_score = list(request.session.get('_old_post').values())
     quiz_rate = QuizRate.get_quiz_rate(quiz_id, request.user.id)
@@ -74,7 +74,7 @@ def quiz_result(request, quiz_id):
     return redirect('homepage')
 
 
-@login_required(login_url='/users/login/')
+@login_required
 def create_quiz(request):
     if request.method == "GET":
         return render(request, 'create_quiz.html')

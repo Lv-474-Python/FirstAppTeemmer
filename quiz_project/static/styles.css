@@ -153,7 +153,7 @@ margin-bottom: 5px;
 
 .quiz_box {
   display:flex;
-  justify-content:space-around;
+  justify-content:space-between;
   background: #FFFFFF;
   max-width: 540px;
   margin-bottom: 30px;
@@ -163,7 +163,7 @@ margin-bottom: 5px;
 }
 
 .quiz_box a{
-width:120px;
+width:170px;
 font-size:22px;
 }
 
@@ -175,7 +175,13 @@ margin:-10px;
 }
 
 
-.quiz_box_info a{
+.quiz_box_info_left a{
+font-size:13px;
+  display:flex;
+  justify-content:start;
+}
+
+.quiz_box_info_right a{
 font-size:13px;
   display:flex;
   justify-content:end;

@@ -9,7 +9,7 @@
 <body>
     <div class="hat">
         <button onclick="window.location='/homepage/';">Home</button>
-        <a>Username</a>
+        <a style="width:70px"></a>
         <button onclick="window.location='/users/profile';">Profile</button>
         <button onclick="window.location='/users/logout';">Log out</button>
     </div>
@@ -18,8 +18,12 @@
     {% if all_quizzes %}
     {% for quiz in all_quizzes %}
     <div class="quiz_box">
-        <a href="/quizzes/{{ quiz.id }}">{{ quiz.name }}</a>
-        <div class="quiz_box_info">
+        <div class="quiz_box_info_left">
+        <a href="/quizzes/{{ quiz.id }}" style="font-size:23px;">{{ quiz.name }}</a> <br>
+            <a style="font-size:13px;">created by: {{ username }}</a>
+            <a style="font-size:11px;">{{ quiz.date }}</a>
+        </div>
+        <div class="quiz_box_info_right">
             <a style="font-size:16px;color:{% if quiz.rate < 0 %} red {% else %} green {% endif %}">
                 rate: {{ quiz.rate }}</a>
             <a>questions: {{ quiz.questions_count }}</a>

@@ -47,7 +47,7 @@ def login_user(request):
     return render(request, 'login.html', {'error': 'No such user'})
 
 
-@login_required(login_url='/users/login/')
+@login_required
 def logout_user(request):
     logout(request)
     return redirect('login')
