@@ -7,9 +7,16 @@
     <title>Profile</title>
 </head>
 <body>
+    <div class="hat">
+        <button onclick="window.location='/homepage/';">Home</button>
+        <a>Username</a>
+        <button onclick="window.location='/users/profile';" style="opacity:80%;">Profile</button>
+        <button onclick="window.location='/users/logout';">Log out</button>
+    </div>
     <div class="form">
     {{ user.username }}
     {{ user.email }}
+        <a href="/users/change_pass">Change password</a>
     </div>
 </body>
 </html>

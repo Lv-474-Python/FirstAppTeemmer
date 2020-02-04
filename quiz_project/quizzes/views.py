@@ -8,7 +8,7 @@ from answers.models import Answer
 from questions.models import Question
 from quizRates.models import QuizRate
 from quizzes.models import Quiz
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 
 from scores.models import Score
 
@@ -16,7 +16,7 @@ from scores.models import Score
 def get_all_quizzes(request):
     quizzes = Quiz.objects.all()
     for quiz in quizzes:
-        quiz = add_additional_info(quiz, request.user.id)
+        add_additional_info(quiz, request.user.id)
     return render(request, 'quizzes.html', {'all_quizzes': quizzes})
 
 
@@ -27,7 +27,7 @@ def calculate_score(request, questions):
                         for answer in question.answers]
         question_result = 0
         for answer in user_answers:
-            question_result += 1 if Answer.is_correct_answer(answer) else 0
+            question_result += Answer.is_correct_answer(answer)
         quiz_score += question_result/len(question.answers)*question.points
     return round(quiz_score, 2)
 
@@ -44,12 +44,10 @@ def pass_quiz(request, quiz_id):
     quiz_score = calculate_score(request, questions)
     best_score = Score.get_score(quiz.id, request.user.id)
     score = Score(user_id=request.user.id, quiz_id=quiz_id, score=quiz_score)
-    if best_score == -1:
-        score.save()
-    else:
+    if best_score != -1:
         score = Score.objects.get(user_id=request.user.id, quiz_id=quiz_id)
         score.score = best_score if best_score >= quiz_score else quiz_score
-        score.save()
+    score.save()
     request.session['_old_post'] = {"score": quiz_score, 'quiz_name': quiz.name, "best_score": best_score}
     return HttpResponseRedirect(f'/quizzes/{quiz.id}/result')
 
@@ -108,3 +106,9 @@ def add_additional_info(quiz, user_id):
     quiz.best_score = Score.get_score(quiz.id, user_id)
     quiz.max_points = questions.aggregate(Sum('points'))['points__sum'] if questions else 0
     return quiz
+
+
+def check_quiz_name(request, quiz_name):
+    if Quiz.objects.get(name=quiz_name):
+        return JsonResponse({'available': False})
+    return JsonResponse({'available': True})

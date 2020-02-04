@@ -7,6 +7,12 @@
     <title>QUIZ_PROJECT</title>
 </head>
 <body>
+    <div class="hat">
+        <button onclick="window.location='/homepage/';" style="opacity:80%;">Home</button>
+        <a>Username</a>
+        <button onclick="window.location='/users/profile';">Profile</button>
+        <button onclick="window.location='/users/logout';">Log out</button>
+    </div>
 <div class="form">
 	    {% if user.is_anonymous %}
         you are not logged in

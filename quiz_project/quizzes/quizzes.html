@@ -7,7 +7,14 @@
     <title>Quizzes</title>
 </head>
 <body>
+    <div class="hat">
+        <button onclick="window.location='/homepage/';">Home</button>
+        <a>Username</a>
+        <button onclick="window.location='/users/profile';">Profile</button>
+        <button onclick="window.location='/users/logout';">Log out</button>
+    </div>
 <div class="form">
+
     {% if all_quizzes %}
     {% for quiz in all_quizzes %}
     <div class="quiz_box">
