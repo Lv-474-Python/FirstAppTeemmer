@@ -3,38 +3,49 @@
 <head>
     {% load static %}
     <link rel="stylesheet" type="text/css" href="{% static 'styles.css' %}">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js" type="text/javascript"></script>
+    <script src="{% static 'script.js' %}" type="text/javascript"></script>
     <meta charset="UTF-8">
     <title>Quizzes</title>
 </head>
 <body>
-    <div class="hat">
-        <button onclick="window.location='/homepage/';">Home</button>
-        <a style="width:70px"></a>
-        <button onclick="window.location='/users/profile';">Profile</button>
-        <button onclick="window.location='/users/logout';">Log out</button>
-    </div>
+<div class="hat">
+    <button onclick="window.location='/homepage/';">Home</button>
+    <a style="width:70px"></a>
+    <button onclick="window.location='/users/profile';">Profile</button>
+    <button onclick="window.location='/users/logout';">Log out</button>
+</div>
 <div class="form">
-
+    <form method="post" action="" >
+        {% csrf_token %}
+        <input type="text" name="search_by_name" placeholder="Search" style="width:350px; "
+               value="{% if search_value %} {{ search_value }} {% endif %}">
+        <button onclick="window.location='/quizzes/all';">Search</button>
+    </form>
+    <button onclick="window.location='/quizzes/{% if np %}all{% else %}not_passed{% endif %}';"
+            style="{% if np %} opacity:65%; {% endif %} margin: -10px -326px 20px 0px ;">Not passed</button>
     {% if all_quizzes %}
     {% for quiz in all_quizzes %}
     <div class="quiz_box">
         <div class="quiz_box_info_left">
-        <a href="/quizzes/{{ quiz.id }}" style="font-size:23px;">{{ quiz.name }}</a> <br>
-            <a style="font-size:13px;">created by: {{ username }}</a>
+            <a href="/quizzes/{{ quiz.id }}" style="font-size:23px;">{{ quiz.name }}</a> <br>
+            <a style="font-size:13px;">created by: {{ quiz.creator_name }}</a>
             <a style="font-size:11px;">{{ quiz.date }}</a>
         </div>
         <div class="quiz_box_info_right">
             <a style="font-size:16px;color:{% if quiz.rate < 0 %} red {% else %} green {% endif %}">
                 rate: {{ quiz.rate }}</a>
+            <a>users passed: {{ quiz.users_passed }}</a>
             <a>questions: {{ quiz.questions_count }}</a>
             <a>max points: {{ quiz.max_points }}</a>
             <a>your best score:{% if quiz.best_score == -1 %} 0 {% else %} {{ quiz.best_score }} {% endif %}</a>
-        </div> <br>
+        </div>
+        <br>
         <h5>last comment: <i style="font-size:11px">{{ quiz.comment }}</i></h5>
     </div>
     {% endfor %}
     {% else %}
-        <p>No quizzes are available.</p>
+    <p>No quizzes are available.</p>
     {% endif %}
 </div>
 </body>

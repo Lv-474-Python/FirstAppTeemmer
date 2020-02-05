@@ -8,26 +8,26 @@
 </head>
 <body>
 <div class="form">
-<h2> Your scores for quiz: {{ quiz_name }} </h2>
-{% if best_score == -1 %}
-    <a> It's your first try and you scored {{ score }} points!</a>
-{% else %}
-    {% if score >= best_score %}
-    <a>Congrats! your score: {{ score }}, best score: {{ best_score }}</a>
+    <h2> Your scores for quiz: {{ quiz_name }} </h2>
+    {% if best_score == -1 %}
+        <a> It's your first try and you scored {{ score }} points!</a>
     {% else %}
-    <a> So sad(( your score: {{ score }}, best score: {{ best_score }}</a>
+        {% if score >= best_score %}
+            <a>Congrats! your score: {{ score }}, best score: {{ best_score }}</a>
+        {% else %}
+            <a> So sad(( your score: {{ score }}, best score: {{ best_score }}</a>
+        {% endif %}
     {% endif %}
-{% endif %}
     <form method="post" action="">
         <div align="center" class="quiz_rate">
             {% csrf_token %}
             <label>
-            <input type="radio" name="checkbox_rate" value="-1"{% if rate == -1 %} checked {% endif %}/>
-             <img src="{% static 'dislike.jpeg' %}" height="100px"/>
+                <input type="radio" name="checkbox_rate" value="-1" {% if rate == -1 %} checked {% endif %}/>
+                <img src="{% static 'dislike.jpeg' %}" height="100px"/>
             </label>
             <label>
-            <input type="radio" name="checkbox_rate" value="1" {% if rate == 1 %} checked {% endif %}/>
-             <img src="{% static 'like.jpeg' %}" height="100px"/>
+                <input type="radio" name="checkbox_rate" value="1" {% if rate == 1 %} checked {% endif %}/>
+                <img src="{% static 'like.jpeg' %}" height="100px"/>
             </label>
             <input type="text" name="comment" placeholder="leave a comment" value="{{ comment }}"/>
         </div>

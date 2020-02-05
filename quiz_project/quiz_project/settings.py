@@ -140,6 +140,7 @@ STATICFILES_DIRS = [
 
 LOGIN_URL = '/users/login'
 
+
 try:
     from .local_settings import *
 except ImportError:

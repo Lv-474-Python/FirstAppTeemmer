@@ -1,4 +1,6 @@
 from django.db import models
+from django.db.models import Avg
+
 from users.models import CustomUser
 from quizzes.models import Quiz
 
@@ -20,3 +22,10 @@ class Score(models.Model):
         if score:
             return float(score[0].score)
         return -1
+
+    @staticmethod
+    def get_avg_score(quiz_id):
+        score = Score.objects.filter(quiz_id=quiz_id)
+        if score:
+            return round(score.aggregate(Avg('score'))['score__avg'], 2)
+        return 0

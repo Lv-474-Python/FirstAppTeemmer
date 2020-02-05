@@ -1,4 +1,6 @@
 from django.db import models
+from django.db.models import Sum
+
 from users.models import CustomUser
 from quizzes.models import Quiz
 
@@ -16,8 +18,15 @@ class QuizRate(models.Model):
         ]
 
     @staticmethod
-    def get_quiz_rate(quiz_id, user_id):
+    def get_users_rate(quiz_id, user_id):
         rate = QuizRate.objects.filter(user_id=user_id, quiz_id=quiz_id)
         if rate:
             return rate[0]
         return None
+
+    @staticmethod
+    def get_rate(quiz_id):
+        rate = QuizRate.objects.filter(quiz_id=quiz_id).aggregate(Sum('rate'))['rate__sum']
+        if rate:
+            return rate
+        return 0

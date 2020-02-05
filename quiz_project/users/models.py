@@ -31,3 +31,19 @@ class CustomUser(AbstractBaseUser):
             return CustomUser.objects.get(username=username)
         except ObjectDoesNotExist:
             return None
+
+    @staticmethod
+    def change_password(username, new_password):
+        try:
+            user = CustomUser.objects.get(username=username)
+        except ObjectDoesNotExist:
+            return None
+
+        user.set_password(new_password)
+
+        try:
+            user.save()
+            return user
+        except IntegrityError as error:
+            print(error)
+            return None

@@ -18,11 +18,13 @@
     </div>
     <div class="form">
         {% csrf_token %}
-        <input type="text" placeholder="quiz name" name="quiz_name" onchange="check_quiz_name(this.value)" required> <br>
+        <input type="text" placeholder="quiz name" name="quiz_name" onchange="check_quiz_name(this.value)" required>
+        <br>
     </div>
     <div class="hat">
         <button class="add-question-btn"> add question</button>
-    <button type="submit" >submit</button></div>
+        <button type="submit">submit</button>
+    </div>
 </form>
 <script type="text/javascript">
 $(document).ready(function(){
@@ -36,7 +38,7 @@ $(document).ready(function(){
     check_quiz_name = function(value){
         let csrf_token = document.getElementsByName("csrfmiddlewaretoken")[0].value;
         $.ajax({
-            url: '/quizzes/' + value,
+            url: '/quizzes/check/' + value,
             type: 'POST',
             success: function(data){
                 if (!data['available']) {
@@ -85,6 +87,7 @@ $(document).ready(function(){
         else {alert("At least 2 answers!");}
     };
 });
+
 </script>
 
 

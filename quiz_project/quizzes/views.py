@@ -1,7 +1,7 @@
 from functools import reduce
 
 from django.contrib.auth.decorators import login_required
-from django.db.models import Sum
+from django.db.models import Sum, Avg
 from django.shortcuts import render, redirect
 
 from answers.models import Answer
@@ -11,13 +11,22 @@ from quizzes.models import Quiz
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 
 from scores.models import Score
+from users.models import CustomUser
 
 
+@login_required
 def get_all_quizzes(request):
-    quizzes = Quiz.objects.all()
+    search = ""
+    if request.method == "POST":
+        search = request.POST.get('search_by_name').strip()
+    if search:
+        quizzes = Quiz.objects.filter(name__contains=search).order_by('-id')
+    else:
+        quizzes = Quiz.objects.all().order_by('-id')
     for quiz in quizzes:
         add_additional_info(quiz, request.user.id)
-    return render(request, 'quizzes.html', {'all_quizzes': quizzes, 'username': request.user.username})
+    return render(request, 'quizzes.html', {'all_quizzes': quizzes,
+                                            'search_value': search})
 
 
 def calculate_score(request, questions):
@@ -55,7 +64,7 @@ def pass_quiz(request, quiz_id):
 @login_required
 def quiz_result(request, quiz_id):
     score, quiz_name, best_score = list(request.session.get('_old_post').values())
-    quiz_rate = QuizRate.get_quiz_rate(quiz_id, request.user.id)
+    quiz_rate = QuizRate.get_users_rate(quiz_id, request.user.id)
     if request.method == "GET":
         return render(request, 'quiz_result.html', {'score': score,
                                                     'quiz_name': quiz_name,
@@ -100,15 +109,70 @@ def create_quiz(request):
 def add_additional_info(quiz, user_id):
     rates = QuizRate.objects.filter(quiz_id=quiz.id)
     questions = Question.objects.filter(quiz_id=quiz.id)
-    quiz.rate = rates.aggregate(Sum('rate'))['rate__sum'] if rates else 0
-    quiz.comment = list(rates.order_by('-id'))[0].comment if rates else "No comments yet("
+    quiz.rate = QuizRate.get_rate(quiz.id)
+    quiz.users_passed = len(Score.objects.filter(quiz_id=quiz.id))
+    quiz.comment = list(rates.order_by('-id'))[0].comment if rates else ""
     quiz.questions_count = len(questions)
     quiz.best_score = Score.get_score(quiz.id, user_id)
     quiz.max_points = questions.aggregate(Sum('points'))['points__sum'] if questions else 0
+    quiz.creator_name = CustomUser.objects.get(id=quiz.user_id).username
     return quiz
 
 
+@login_required
 def check_quiz_name(request, quiz_name):
-    if Quiz.objects.get(name=quiz_name):
+    if Quiz.objects.filter(name=quiz_name):
         return JsonResponse({'available': False})
     return JsonResponse({'available': True})
+
+
+def get_users_quizzes(request):
+    quizzes = []
+    for quiz in Quiz.objects.filter(user_id=request.user.id).order_by('-id'):
+        quizzes.append({'passed_count': len(Score.objects.filter(quiz_id=quiz.id)),
+                        'rate': QuizRate.get_rate(quiz.id),
+                        'avg_score': Score.get_avg_score(quiz.id),
+                        'id': quiz.id,
+                        'date': quiz.date,
+                        'name': quiz.name})
+    return JsonResponse({'quizzes': quizzes})
+
+
+@login_required
+def get_passed_quizzes(request):
+    scores = Score.objects.filter(user_id=request.user.id)
+    quizzes = [quiz for quiz in Quiz.objects.all().order_by('-id') if Score.get_score(quiz.id, request.user.id) != -1]
+    result = []
+    for quiz in quizzes:
+        result.append({'user_score': str(Score.get_score(quiz.id, request.user.id)),
+                       'rate': QuizRate.get_rate(quiz.id),
+                       'avg_score': Score.get_avg_score(quiz.id),
+                       'id': quiz.id,
+                       'date': quiz.date,
+                       'name': quiz.name})
+    return JsonResponse({'quizzes': result})
+
+
+@login_required
+def get_quizzes_to_pass(request):
+    scores = Score.objects.filter(user_id=request.user.id)
+    search = ""
+    if request.method == "POST":
+        search = request.POST.get('search_by_name').strip()
+    if search:
+        quizzes = Quiz.objects.filter(name__contains=search).order_by('-id')
+    else:
+        quizzes = Quiz.objects.all().order_by('-id')
+    for score in scores:
+        quizzes = quizzes.exclude(id=score.quiz_id)
+    for quiz in quizzes:
+        add_additional_info(quiz, request.user.id)
+    return render(request, 'quizzes.html', {'all_quizzes': quizzes,
+                                            'search_value': search,
+                                            'np': True})
+
+
+def quiz_comments(request, quiz_id):
+    rates = QuizRate.objects.filter(quiz_id=quiz_id)
+    return render(request, 'quiz_comments.html', {'rates': rates})
+
