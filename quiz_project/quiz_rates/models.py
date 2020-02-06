@@ -30,3 +30,11 @@ class QuizRate(models.Model):
         if rate:
             return rate
         return 0
+
+    @staticmethod
+    def get_last_comment(quiz_id):
+        comments = [quizRate.comment for quizRate in QuizRate.objects.filter(quiz_id=quiz_id).order_by('-id')]
+        for comment in comments:
+            if comment:
+                return comment
+        return "No comments yet"
