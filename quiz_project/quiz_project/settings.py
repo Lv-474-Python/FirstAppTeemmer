@@ -42,7 +42,7 @@ INSTALLED_APPS = [
     'answers',
     'scores',
     'quizzes',
-    'quizRates',
+    'quiz_rates',
     'homepage'
 ]
 

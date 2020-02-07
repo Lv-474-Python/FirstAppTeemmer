@@ -17,6 +17,7 @@
         <button onclick="window.location='/users/logout';">Log out</button>
     </div>
     <div class="form">
+        <a style="color:rgba(245, 0, 0, 0.7)" id="error-message"></a><br>
         {% csrf_token %}
         <input type="text" placeholder="quiz name" name="quiz_name" onchange="check_quiz_name(this.value)" required>
         <br>
@@ -35,22 +36,6 @@ $(document).ready(function(){
     var questionWrapper = $('.form');
     questionWrapper.append(get_questionHTML());
 
-    check_quiz_name = function(value){
-        let csrf_token = document.getElementsByName("csrfmiddlewaretoken")[0].value;
-        $.ajax({
-            url: '/quizzes/check/' + value,
-            type: 'POST',
-            success: function(data){
-                if (!data['available']) {
-                alert("Such quiz name has been taken already!");
-                $('input[name ="quiz_name"]')[0].value = '';} },
-            beforeSend: function (xhr) {
-                xhr.setRequestHeader("X-CSRFToken", `${csrf_token}`);
-            },
-            dataType: 'json',
-        });
-    }
-
     function get_answerHTML(q_num, a_num){
         var $ans = $( '<div class="answer">' +
         '<input type="text" placeholder="answer ' + a_num + '" name="answer_' + q_num + '_' + a_num + '" required>' +
@@ -67,10 +52,10 @@ $(document).ready(function(){
            questionWrapper.append(get_questionHTML()); });
 
     function get_questionHTML(){
-        var q_num = questionWrapper[0].childElementCount -2;
+        var q_num = questionWrapper[0].childElementCount - 4;
         var $quest = $('<div class="question">' +
         '<input type="text" placeholder="question ' + q_num +'" name="question_' + q_num + '" required><br>' +
-        '<input type="number" value="1" placeholder="points ' + q_num +'" name="question_pts_' + q_num + '"><br>' +
+        '<input type="number" value="1" min="1" max="50" placeholder="points ' + q_num +'" name="question_pts_' + q_num + '"><br>' +
         '<a onclick="remove_answer(this)" class="remove-answer-btn">' +
         '<img src="{% static 'minus.png' %}" style="width:40px;"></a>' +
         '<a onclick="add_answer(this)" class="add-answer-btn"><img src="{% static 'plus.png' %}" style="width:40px;"></a>' +

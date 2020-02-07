@@ -20,8 +20,8 @@
     <div class="profile">
         <input type="text" placeholder="{{ user.username }}" readonly> <br>
         <input type="text" placeholder="{{ user.email }}" readonly> <br>
-        <button onclick="window.location='/users/change_pass'">Change password</button><br>
-        <select id="quizSelect" onchange="quiz_select()">
+        <button onclick="window.location='/users/change_pass'" style="width:215px;">Change password</button><br>
+        <select id="quizSelect" onchange="quiz_select()" style="width:215px;">
             <option value="" selected disabled hidden>Select</option>
             <option value="users">Your quizzes</option>
             <option value="passed">Previously passed quizzes</option>

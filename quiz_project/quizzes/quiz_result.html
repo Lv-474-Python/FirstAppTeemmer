@@ -10,12 +10,12 @@
 <div class="form">
     <h2> Your scores for quiz: {{ quiz_name }} </h2>
     {% if best_score == -1 %}
-        <a> It's your first try and you scored {{ score }} points!</a>
+        <a> It's your first try and you scored {{ score }}/{{ max_points }} points!</a>
     {% else %}
         {% if score >= best_score %}
-            <a>Congrats! your score: {{ score }}, best score: {{ best_score }}</a>
+            <a>Congrats! your score: {{ score }}, best score: {{ best_score }}/{{ max_points }}</a>
         {% else %}
-            <a> So sad(( your score: {{ score }}, best score: {{ best_score }}</a>
+            <a> So sad(( your score: {{ score }}, best score: {{ best_score }}/{{ max_points }}</a>
         {% endif %}
     {% endif %}
     <form method="post" action="">
@@ -28,8 +28,8 @@
             <label>
                 <input type="radio" name="checkbox_rate" value="1" {% if rate == 1 %} checked {% endif %}/>
                 <img src="{% static 'like.jpeg' %}" height="100px"/>
-            </label>
-            <input type="text" name="comment" placeholder="leave a comment" value="{{ comment }}"/>
+            </label><br>
+            <input type="text" name="comment" placeholder="leave a comment" value="{{ comment }}" style="width:450px;"/>
         </div>
 
         <h3 class="message">Expected better result? <a href="/quizzes/{{ quiz_id }}/">Try again</a></h3><br>

@@ -1,16 +1,33 @@
+check_quiz_name = function(value){
+    let csrf_token = document.getElementsByName("csrfmiddlewaretoken")[0].value;
+    $.ajax({
+        url: '/quizzes/check/' + value,
+        type: 'POST',
+        success: function(data){
+            if (!data['available']) {
+            $('input[name ="quiz_name"]')[0].style.boxShadow = "0 0 2px 1px rgba(245, 0, 0, 0.7), 0 2px 2px 0 rgba(245, 0, 0, 0.7)";
+            document.getElementById('error-message').text = "Quiz name is already taken!"; }
+            if(data['available']) {
+            $('input[name ="quiz_name"]')[0].style.boxShadow = "0 0 2px 1px rgba(0, 180, 0, 0.7), 0 2px 2px 0 rgba(0, 180, 0, 0.7)";
+            document.getElementById('error-message').text = "";}
+            },
+        beforeSend: function (xhr) {
+            xhr.setRequestHeader("X-CSRFToken", `${csrf_token}`);
+        },
+        dataType: 'json',
+    });
+}
+
 check_name = function(value){
     let csrf_token = document.getElementsByName("csrfmiddlewaretoken")[0].value;
-    console.log(value);
     data = {check_username: value};
     $.ajax({
         url: '/users/register/',
         type: 'POST',
         data: data,
         success: function(data){
-            console.log(data);
             if (!data['name_available']) {
             $('input[name ="username"]')[0].style.boxShadow = "0 0 2px 1px rgba(245, 0, 0, 0.7), 0 2px 2px 0 rgba(245, 0, 0, 0.7)";
-            console.log(document.getElementById('error-message'));
             document.getElementById('error-message').text = "Username is already taken!"; }
             if(data['name_available']) {
             $('input[name ="username"]')[0].style.boxShadow = "0 0 2px 1px rgba(0, 180, 0, 0.7), 0 2px 2px 0 rgba(0, 180, 0, 0.7)";
@@ -25,18 +42,15 @@ check_name = function(value){
 
 check_email = function(value){
     let csrf_token = document.getElementsByName("csrfmiddlewaretoken")[0].value;
-    console.log(value);
     data = {check_mail: value};
     $.ajax({
         url: '/users/register/',
         type: 'POST',
         data: data,
         success: function(data){
-            console.log(data);
             if (!data['mail_available']) {
             $('input[name ="email"]')[0].style.boxShadow = "0 0 2px 1px rgba(245, 0, 0, 0.7), " +
                                                            "0 2px 2px 0 rgba(245, 0, 0, 0.7)";
-            console.log(document.getElementById('error-message'));
             document.getElementById('error-message').text = "Email is already taken!"; }
             if(data['mail_available']) {
             $('input[name ="email"]')[0].style.boxShadow = "0 0 2px 1px rgba(0, 180, 0, 0.7), " +
@@ -93,7 +107,7 @@ get_usersHTML = function(quiz){
     var $res = $('<div class="quiz_box" style="max-width:480px;">' +
         '<div class="quiz_box_info_left">' +
             '<a style="font-size:23px;">' + quiz['name'] +'</a> <br>' +
-            '<a style="font-size:11px;">' + quiz['date'] + ' </a></div>' +
+            '<a style="font-size:11px;">' + quiz['date'].slice(0,10) + ' </a></div>' +
             '<div class="quiz_box_info_right" style="margin-right:15px;">' +
             '<a style="font-size:16px;">rate: ' + quiz['rate'] + '</a><br>' +
             '<a>average score: ' + quiz['avg_score'] + '</a>' +
@@ -133,3 +147,19 @@ validate_repeat = function(){
             }
 }
 
+delete_comment = function(rateId, form){
+    let csrf_token = document.getElementsByName("csrfmiddlewaretoken")[0].value;
+    $.ajax({
+        url: `${rateId}`,
+        type: 'DELETE',
+        success: function(data){
+        if(data['deleted']){
+            form.parentElement.parentElement.remove();
+        }
+        },
+        beforeSend: function (xhr) {
+            xhr.setRequestHeader("X-CSRFToken", `${csrf_token}`);
+        },
+        dataType: 'json',
+        });
+}

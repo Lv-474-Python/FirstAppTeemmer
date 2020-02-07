@@ -24,6 +24,17 @@ profile-page {
   box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.2), 0 5px 5px 0 rgba(0, 0, 0, 0.24);
 }
 
+.form .message {
+  margin: 15px 0 0;
+  color: #b3b3b3;
+  font-size: 12px;
+}
+
+.form .message a {
+  color: #4CAF50;
+  text-decoration: none;
+}
+
 .quiz_rate{
   position: relative;
   max-width: 560px;
@@ -216,4 +227,15 @@ font-size:13px;
   color: #FFFFFF;
   font-size: 11px;
   cursor: pointer;
+}
+
+.comment-box {
+  display:flex;
+  justify-content:space-between;
+  background: #FFFFFF;
+  max-width: 540px;
+  margin-bottom: 30px;
+  padding: 30px;
+  text-align: center;
+  box-shadow: 0 0 6px 0 rgba(0, 0, 0, 0.2), 0 3px 3px 0 rgba(0, 0, 0, 0.24);
 }

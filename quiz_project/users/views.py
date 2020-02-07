@@ -1,27 +1,29 @@
+"""Views for user (registration, authentication)"""
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponse, JsonResponse
+from django.http import JsonResponse
 from django.shortcuts import render, redirect
-from django.template.backends import django
 
 from users.models import CustomUser
 
 
-def get_all_users(request):
-    return render(request, 'users.html', {'all_users': CustomUser.objects.all()})
-
-
 def register(request):
+    """if POST method, checks whether username or email are already in use by
+    other accounts
+        if GET method, renders register page.
+    Returns:
+        returns login page, if new user was created,
+        reloads register page otherwise.
+    """
     if request.method == "GET":
         return render(request, 'register.html')
     if request.POST.get('check_username'):
-        if CustomUser.objects.filter(username=str(request.POST['check_username'])):
-            return JsonResponse({'name_available': False})
-        return JsonResponse({'name_available': True})
+        username = str(request.POST['check_username'])
+        return JsonResponse({
+            'name_available': not CustomUser.objects.filter(username=username)})
     if request.POST.get('check_mail'):
-        if CustomUser.objects.filter(email=str(request.POST['check_mail'])):
-            return JsonResponse({'mail_available': False})
-        return JsonResponse({'mail_available': True})
+        email = str(request.POST['check_mail'])
+        return JsonResponse({'mail_available': not CustomUser.objects.filter(email=email)})
     name = request.POST.get('username')
     password = request.POST.get('password')
     email = request.POST.get('email')
@@ -30,10 +32,16 @@ def register(request):
         user.is_active = True
         user.save()
         return redirect('login')
-    return render(request, 'register.html')
+    return render(request, 'register.html', status=400)
 
 
 def login_user(request):
+    """if GET method, renders login page.
+
+    Returns:
+        returns homepage, if user was authorized,
+        reloads login page with proper message otherwise.
+    """
     if request.method == 'GET':
         return render(request, 'login.html')
     name = request.POST['username']
@@ -43,15 +51,21 @@ def login_user(request):
         if user and user.is_active:
             login(request, user)
             return redirect('homepage')
-        return render(request, 'login.html', {'error': 'Wrong password', 'username': name})
-    return render(request, 'login.html', {'error': 'No such user'})
+        return render(request,
+                      'login.html',
+                      {
+                          'error': 'Wrong password',
+                          'username': name
+                      },
+                      status=400)
+    return render(request, 'login.html', {'error': 'No such user'}, status=400)
 
 
 @login_required
 def logout_user(request):
+    """logs user out
+    Returns:
+        returns login page
+    """
     logout(request)
     return redirect('login')
-
-
-
-

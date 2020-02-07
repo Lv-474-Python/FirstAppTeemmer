@@ -1,3 +1,4 @@
+"""profile views"""
 from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.hashers import check_password
@@ -7,6 +8,10 @@ from users.models import CustomUser
 
 
 def get_profile(request):
+    """
+        Renders profile page for a user,
+        redirects to login page otherwise.
+    """
     user = request.user
     if user.is_anonymous:
         return redirect('login')
@@ -15,6 +20,11 @@ def get_profile(request):
 
 @login_required(login_url='/users/login/')
 def change_password(request):
+    """
+        on GET, renders change password page.
+        on POST, checks whether old password entered correctly,
+        updates it if yes, reloads this page with message otherwise.
+    """
     if request.method == "GET":
         return render(request, 'change_password.html')
     cur_pass = request.user.password
